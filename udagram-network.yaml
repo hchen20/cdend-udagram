@@ -27,5 +27,27 @@ Resources:
              -  Key: Name
                 Value: public2
             VpcId: !Ref UdagramVPC
-                
+    UdagramRouteTable:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref UdagramVPC
+    RouteTableAssociation1:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref UdagramRouteTable
+            SubnetId: !Ref UdagramPubSubnet1
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+    GatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties:
+            InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref UdagramVPC
+    DefaultRoute:
+        Type: AWS::EC2::Route
+        DependsOn: GatewayAttachment
+        Properties:
+            DestinationCidrBlock : "0.0.0.0/0"
+            GatewayId: !Ref InternetGateway
+            RouteTableId: RouteTable
                     
